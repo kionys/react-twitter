@@ -1,8 +1,16 @@
+import { Layout } from "components/layout";
 import Router from "components/router";
-import "./App.css";
+import { app } from "firebase-app";
+import { getAuth } from "firebase/auth";
 
 function App() {
-  return <Router />;
+  const auth = getAuth(app);
+  console.log(auth);
+  return (
+    <Layout>
+      <Router />
+    </Layout>
+  );
 }
 
 export default App;
