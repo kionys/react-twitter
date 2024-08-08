@@ -299,4 +299,7 @@ body {
       color: $gray;
     }
   }
+  &__error {
+    color: rgb(255, 92, 92);
+  }
 }
