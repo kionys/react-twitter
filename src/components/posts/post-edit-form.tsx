@@ -1,38 +1,54 @@
-import AuthContext from "context/auth-context";
 import { db } from "firebase-app";
-import { addDoc, collection } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { PostProps } from "pages/home";
+import { useCallback, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
 interface IStateForm {
   content: string;
 }
-export default function PostForm() {
-  const { user } = useContext(AuthContext);
+export default function PostEditForm() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const [post, setPost] = useState<PostProps | null>(null);
   const [state, setState] = useState<IStateForm>({
     content: "",
   });
+
+  // 게시글 상세 가져오기
+  const getPost = useCallback(async () => {
+    if (params.id) {
+      const docRef = doc(db, "posts", params.id);
+      const docSnap = await getDoc(docRef);
+      setPost({ ...(docSnap.data() as PostProps), id: docSnap.id });
+      setState({ ...state, content: docSnap?.data()?.content });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
+
+  useEffect(() => {
+    params.id && getPost();
+  }, [getPost, params.id]);
 
   const onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
   };
 
-  // 게시글 생성
+  // 게시글 수정
   const onSubmitForm = async (e: any) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, "posts"), {
-        content: state.content,
-        createdAt: new Date()?.toLocaleDateString("ko", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-        uid: user?.uid,
-        email: user?.email,
-      });
-      setState({ ...state, content: "" });
-      toast.success("게시글을 생성했습니다.");
+      if (post) {
+        const postRef = doc(db, "posts", post?.id);
+        await updateDoc(postRef, {
+          content: state.content,
+        });
+        setState({ ...state, content: "" });
+        navigate(`/posts/${post?.id}`);
+        toast.success("게시글을 수정했습니다.");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -66,11 +82,7 @@ export default function PostForm() {
           onChange={onChangeImage}
           className="hidden"
         />
-        <input
-          type="submit"
-          value={"Tweet"}
-          className="post-form__submit-btn"
-        />
+        <input type="submit" value={"수정"} className="post-form__submit-btn" />
       </div>
     </form>
   );
