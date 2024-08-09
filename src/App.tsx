@@ -20,8 +20,8 @@ function App() {
     onAuthStateChanged(auth, user => {
       user && setIsAuthenticated(true);
       !user && setIsAuthenticated(false);
+      setInit(true);
     });
-    setInit(true);
   }, [auth]);
 
   return (

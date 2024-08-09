@@ -1,5 +1,11 @@
 import { app } from "firebase-app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -52,6 +58,42 @@ export default function LoginForm() {
     }
   };
 
+  const onClickSocialLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const name = e.currentTarget.name;
+
+    let provider: any;
+    const auth = getAuth(app);
+
+    switch (name) {
+      case "google":
+        provider = new GoogleAuthProvider();
+        break;
+      case "github":
+        provider = new GithubAuthProvider();
+        break;
+      default:
+        return;
+    }
+
+    try {
+      await signInWithPopup(
+        auth,
+        provider as GithubAuthProvider | GoogleAuthProvider,
+      )
+        .then(result => {
+          console.log(result);
+          console.log("User Info:", result.user);
+          navigate("/");
+          toast.success("로그인 되었습니다.");
+        })
+        .catch(error => {
+          const errorMessage = error?.message;
+          toast.error(errorMessage);
+        });
+    } catch (error) {
+      console.error("Error during social login:", error);
+    }
+  };
   return (
     <>
       <form onSubmit={onClickSubmitLogin} className="form form--lg">
@@ -98,6 +140,26 @@ export default function LoginForm() {
             disabled={error?.length > 0}
           >
             로그인
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            name="google"
+            className="form__btn--google"
+            onClick={onClickSocialLogin}
+          >
+            Google로 로그인
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            name="github"
+            className="form__btn--github"
+            onClick={onClickSocialLogin}
+          >
+            Github로 로그인
           </button>
         </div>
       </form>
