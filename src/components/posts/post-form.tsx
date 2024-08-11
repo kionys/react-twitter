@@ -43,7 +43,7 @@ export default function PostForm() {
   };
 
   // 게시글 생성
-  const onSubmitForm = async (e: React.MouseEvent<HTMLFormElement>) => {
+  const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     const key = `${user?.uid}/${uuidv4()}`;
