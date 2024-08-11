@@ -48,13 +48,15 @@ export default function HomePage() {
       {/* Post Form */}
       <PostForm />
       {/* Tweet Posts */}
-      {posts.length > 0 ? (
-        posts?.map(post => <PostBox key={post.id} post={post} />)
-      ) : (
-        <div className="post__no-posts">
-          <div className="post__text">게시글이 없습니다.</div>
-        </div>
-      )}
+      <div className="post">
+        {posts.length > 0 ? (
+          posts?.map(post => <PostBox key={post.id} post={post} />)
+        ) : (
+          <div className="post__no-posts">
+            <div className="post__text">게시글이 없습니다.</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
