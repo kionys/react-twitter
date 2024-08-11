@@ -1,7 +1,12 @@
 import AuthContext from "context/auth-context";
 import { storage } from "firebase-app";
 import { updateProfile } from "firebase/auth";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString,
+} from "firebase/storage";
 import PostsHeader from "pages/posts/posts-header";
 import { useContext, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
@@ -12,6 +17,8 @@ interface IStateProfile {
   displayName?: string | null;
   image?: string | null;
 }
+
+const STORAGE_DOWNLOAD_URL_STR = "https://firebasestorage.googleapis.com";
 
 export default function ProfileEdit() {
   const { user } = useContext(AuthContext);
@@ -58,11 +65,15 @@ export default function ProfileEdit() {
     e.preventDefault();
 
     try {
-      // 기존 이미지 삭제
-      // if (user?.photoURL) {
-      //   const imageRef = ref(storage, user?.photoURL);
-      //   await deleteObject(imageRef).catch(error => console.log(error));
-      // }
+      // 기존 user 이미지가 Firebase Storage 이미지일 경우에만 삭제
+      if (
+        user?.photoURL &&
+        user?.photoURL?.includes(STORAGE_DOWNLOAD_URL_STR)
+      ) {
+        const imageRef = ref(storage, user?.photoURL);
+        imageRef &&
+          (await deleteObject(imageRef).catch(error => console.log(error)));
+      }
 
       // 이미지 업로드
       if (state.image) {

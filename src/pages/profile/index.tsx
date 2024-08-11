@@ -45,7 +45,7 @@ export default function ProfilePage() {
           <img
             src={user?.photoURL || PROFILE_DEFAULT_URL}
             alt="profile"
-            className="profile__img"
+            className="profile__image"
             width={100}
             height={100}
           />
@@ -56,12 +56,10 @@ export default function ProfilePage() {
           >
             프로필 수정
           </button>
-          <div className="profile__text">
-            <div className="profile__name">
-              {user?.displayName || "사용자님"}
-            </div>
-            <div className="profile__email">{user?.email}</div>
-          </div>
+        </div>
+        <div className="profile__text">
+          <div className="profile__name">{user?.displayName || "사용자님"}</div>
+          <div className="profile__email">{user?.email}</div>
         </div>
         <div className="home__tabs">
           <div className="home__tab home__tab--active">For you</div>
