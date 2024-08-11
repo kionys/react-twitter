@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 
 interface IStateForm {
   content: string;
+  hashtags: string[];
+  hashtag: string;
 }
 export default function PostEditForm() {
   const navigate = useNavigate();
@@ -15,15 +17,27 @@ export default function PostEditForm() {
   const [post, setPost] = useState<PostProps | null>(null);
   const [state, setState] = useState<IStateForm>({
     content: "",
+    hashtags: [],
+    hashtag: "",
   });
+
+  useEffect(() => {
+    setState({ ...state, hashtag: "" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state?.hashtags?.length]);
 
   // 게시글 상세 가져오기
   const getPost = useCallback(async () => {
     if (params.id) {
       const docRef = doc(db, "posts", params.id);
       const docSnap = await getDoc(docRef);
+
       setPost({ ...(docSnap.data() as PostProps), id: docSnap.id });
-      setState({ ...state, content: docSnap?.data()?.content });
+      setState({
+        ...state,
+        content: docSnap?.data()?.content,
+        hashtags: docSnap?.data()?.hashtags,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
@@ -44,6 +58,7 @@ export default function PostEditForm() {
         const postRef = doc(db, "posts", post?.id);
         await updateDoc(postRef, {
           content: state.content,
+          hashtags: state.hashtags,
         });
         setState({ ...state, content: "" });
         navigate(`/posts/${post?.id}`);
@@ -54,12 +69,40 @@ export default function PostEditForm() {
     }
   };
 
-  const onChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const name = e.target.name;
     const value = e.target.value;
     setState({ ...state, [name]: value });
   };
 
+  const onKeyUpHashtag = (e: any) => {
+    if (e.keyCode === 32 && e.target.value?.trim() !== "") {
+      // 만약 같은 태그가 있다면 에러를 띄운다.
+      // 아니면 태그를 생성해준다.
+      if (state.hashtags?.includes(e.target.value?.trim())) {
+        toast.error("같은 태그가 있습니다.");
+      } else {
+        setState({
+          ...state,
+          hashtags:
+            state.hashtags?.length > 0
+              ? [...state.hashtags, state.hashtag?.trim()]
+              : [state.hashtag?.trim()],
+        });
+      }
+    }
+  };
+
+  const onClickRemoveHashTag = (tag: string) => {
+    setState({
+      ...state,
+      hashtags: state.hashtags.filter(hashtag => {
+        return hashtag !== tag;
+      }),
+    });
+  };
   return (
     <form onSubmit={onSubmitForm} className="post-form">
       <textarea
@@ -71,6 +114,29 @@ export default function PostEditForm() {
         placeholder="What is happening?"
         onChange={onChangeInput}
       />
+      <div className="post-form__hashtags">
+        <span className="post-form__hashtags-outputs">
+          {state?.hashtags?.map((hashtag, i) => (
+            <span
+              key={i}
+              className="post-form__hashtags-tag"
+              onClick={() => onClickRemoveHashTag(hashtag)}
+            >
+              #{hashtag}
+            </span>
+          ))}
+        </span>
+        <input
+          type="text"
+          className="post-form__input"
+          name="hashtag"
+          id="hashtag"
+          placeholder="해시태그 + 스페이스바 입력"
+          onChange={onChangeInput}
+          onKeyUp={onKeyUpHashtag}
+          value={state.hashtag}
+        />
+      </div>
       <div className="post-form__submit-area">
         <label htmlFor="file-input" className="post-form__file">
           <FiImage className="post-form__file_icon" />
