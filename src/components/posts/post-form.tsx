@@ -123,77 +123,79 @@ export default function PostForm() {
     });
   };
   return (
-    <form onSubmit={onSubmitForm} className="post-form">
-      <textarea
-        name="content"
-        id="content"
-        value={state.content}
-        className="post-form__textarea"
-        required
-        placeholder="What is happening?"
-        onChange={onChangeInput}
-      />
-      <div className="post-form__hashtags">
-        <span className="post-form__hashtags-outputs">
-          {state?.hashtags.map((hashtag, i) => (
-            <span
-              key={i}
-              className="post-form__hashtags-tag"
-              onClick={() => onClickRemoveHashTag(hashtag)}
-            >
-              #{hashtag}
-            </span>
-          ))}
-        </span>
-        <input
-          type="text"
-          className="post-form__input"
-          name="hashtag"
-          id="hashtag"
-          placeholder="해시태그 + 스페이스바 입력"
+    <>
+      <form onSubmit={onSubmitForm} className="post-form">
+        <textarea
+          name="content"
+          id="content"
+          value={state.content}
+          className="post-form__textarea"
+          required
+          placeholder="What is happening?"
           onChange={onChangeInput}
-          onKeyUp={onKeyUpHashtag}
-          value={state.hashtag}
         />
-      </div>
-      <div className="post-form__submit-area">
-        <div className="post-form__image-area">
-          <label htmlFor="file-input" className="post-form__file">
-            <FiImage className="post-form__file_icon" />
-          </label>
-          <input
-            type="file"
-            name="file-input"
-            id="file-input"
-            accept="image/*"
-            onChange={onChangeImage}
-            className="hidden"
-          />
-          {state.imageFile && (
-            <div className="post-form__attachment">
-              <img
-                src={state.imageFile}
-                alt="attachment"
-                width={100}
-                height={100}
-              />
-              <button
-                className="post-form__clear-btn"
-                type="button"
-                onClick={onClickClearImage}
+        <div className="post-form__hashtags">
+          <span className="post-form__hashtags-outputs">
+            {state?.hashtags.map((hashtag, i) => (
+              <span
+                key={i}
+                className="post-form__hashtags-tag"
+                onClick={() => onClickRemoveHashTag(hashtag)}
               >
-                Clear
-              </button>
-            </div>
-          )}
+                #{hashtag}
+              </span>
+            ))}
+          </span>
+          <input
+            type="text"
+            className="post-form__input"
+            name="hashtag"
+            id="hashtag"
+            placeholder="해시태그 + 스페이스바 입력"
+            onChange={onChangeInput}
+            onKeyUp={onKeyUpHashtag}
+            value={state.hashtag}
+          />
         </div>
-        <input
-          type="submit"
-          value={"Tweet"}
-          className="post-form__submit-btn"
-          disabled={isSubmitting}
-        />
-      </div>
-    </form>
+        <div className="post-form__submit-area">
+          <div className="post-form__image-area">
+            <label htmlFor="file-input" className="post-form__file">
+              <FiImage className="post-form__file_icon" />
+            </label>
+            <input
+              type="file"
+              name="file-input"
+              id="file-input"
+              accept="image/*"
+              onChange={onChangeImage}
+              className="hidden"
+            />
+            {state.imageFile && (
+              <div className="post-form__attachment">
+                <img
+                  src={state.imageFile}
+                  alt="attachment"
+                  width={100}
+                  height={100}
+                />
+                <button
+                  className="post-form__clear-btn"
+                  type="button"
+                  onClick={onClickClearImage}
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+          </div>
+          <input
+            type="submit"
+            value={"Tweet"}
+            className="post-form__submit-btn"
+            disabled={isSubmitting}
+          />
+        </div>
+      </form>
+    </>
   );
 }
