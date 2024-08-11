@@ -147,6 +147,26 @@ body {
 }
 
 .post-form {
+  &__image-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__attachment {
+    display: flex;
+    align-items: end;
+    gap: 16px;
+  }
+  &__clear-btn {
+    @extend .button;
+    padding: 0.2rem 0.8rem;
+    background-color: $danger;
+    &:hover,
+    &:focus {
+      background-color: $dangerDark;
+    }
+  }
   &__input {
     font-family: $font;
     padding: 8px;
@@ -202,6 +222,7 @@ body {
 
   &__submit-area {
     display: flex;
+    align-items: center;
     padding: 0.75rem;
     justify-content: space-between;
     border-bottom: 1px solid $border;
@@ -226,6 +247,9 @@ body {
 
 // Post 레이아웃
 .post {
+  &__image-div {
+    padding: 10px 10px 20px 10px;
+  }
   &__header {
     button {
       border: none;
