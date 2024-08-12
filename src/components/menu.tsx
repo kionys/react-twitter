@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 import { BsHouse } from "react-icons/bs";
+import { IoMdNotifications } from "react-icons/io";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,7 +13,6 @@ import { toast } from "react-toastify";
 export default function MenuList() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  console.log(user);
   return (
     <div className="footer">
       <div className="footer__grid">
@@ -27,6 +27,14 @@ export default function MenuList() {
         <button type="button" className="" onClick={() => navigate("/search")}>
           <AiOutlineSearch />
           Search
+        </button>
+        <button
+          type="button"
+          className=""
+          onClick={() => navigate("/notifications")}
+        >
+          <IoMdNotifications />
+          Notification
         </button>
         {user === null ? (
           <button
