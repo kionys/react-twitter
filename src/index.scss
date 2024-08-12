@@ -295,6 +295,32 @@ body {
     display: flex;
     gap: 4px;
     align-items: center;
+
+    &--between {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  &__follow-btn {
+    @extend .button;
+    background-color: $white;
+    color: $grayDark;
+    &:hover {
+      background-color: $grayDark;
+      color: $white;
+    }
+  }
+  &__following-btn {
+    @extend .button;
+    background-color: $grayDark;
+    border: 1px solid $white;
+    color: $white;
+    &:hover {
+      background-color: $grayDark;
+      border: 1px solid $gray;
+      color: $white;
+    }
   }
   &__email,
   &__createdAt {
