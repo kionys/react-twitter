@@ -15,28 +15,57 @@ import { useNavigate } from "react-router-dom";
 const PROFILE_DEFAULT_URL = "/logo512.png";
 
 export default function ProfilePage() {
-  const [posts, setPosts] = useState<PostProps[]>([]);
+  const [activeTab, setActiveTab] = useState<"my" | "like">("my");
+  const [myPosts, setMyPosts] = useState<PostProps[]>([]);
+  const [likePosts, setLikePosts] = useState<PostProps[]>([]);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   // 실시간으로 posts 컬렉션 리스트 가져오기
   useEffect(() => {
     if (user) {
-      let postsRef = collection(db, "posts");
-      let postsQuery = query(
-        postsRef,
-        where("uid", "==", user?.uid),
-        orderBy("createdAt", "desc"),
-      );
-      onSnapshot(postsQuery, snapShot => {
-        let dataObj = snapShot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc?.id,
-        }));
-        setPosts(dataObj as PostProps[]);
-      });
+      switch (activeTab) {
+        // My Post List
+        case "my":
+          let mypPostsRef = collection(db, "posts");
+          const myPostQuery = query(
+            mypPostsRef,
+            where("uid", "==", user?.uid),
+            orderBy("createdAt", "desc"),
+          );
+          onSnapshot(myPostQuery, snapShot => {
+            let dataObj = snapShot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc?.id,
+            }));
+            setMyPosts(dataObj as PostProps[]);
+          });
+          return;
+
+        // Like Post List
+        case "like":
+          let likePostsRef = collection(db, "posts");
+          const likePostQuery = query(
+            likePostsRef,
+            where("likes", "array-contains", user?.uid),
+            orderBy("createdAt", "desc"),
+          );
+
+          onSnapshot(likePostQuery, snapShot => {
+            let dataObj = snapShot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc?.id,
+            }));
+            setLikePosts(dataObj as PostProps[]);
+          });
+          return;
+
+        default:
+          return;
+      }
     }
-  }, []);
+  }, [user, activeTab]);
+
   return (
     <div className="home">
       <div className="home__top">
@@ -62,18 +91,44 @@ export default function ProfilePage() {
           <div className="profile__email">{user?.email}</div>
         </div>
         <div className="home__tabs">
-          <div className="home__tab home__tab--active">For you</div>
-          <div className="home__tab home__tab">Likes</div>
+          <div
+            className={`home__tab ${
+              activeTab === "my" && "home__tab home__tab--active"
+            }`}
+            onClick={() => setActiveTab("my")}
+          >
+            For you
+          </div>
+          <div
+            className={`home__tab ${
+              activeTab === "like" && "home__tab home__tab--active"
+            }`}
+            onClick={() => setActiveTab("like")}
+          >
+            Likes
+          </div>
         </div>
-        <div className="post">
-          {posts?.length > 0 ? (
-            posts?.map((post, i) => <PostBox key={i} post={post} />)
-          ) : (
-            <div className="post__no-posts">
-              <div className="post__text">게시글이 없습니다.</div>
-            </div>
-          )}
-        </div>
+        {activeTab === "my" ? (
+          <div className="post">
+            {myPosts?.length > 0 ? (
+              myPosts?.map((post, i) => <PostBox key={i} post={post} />)
+            ) : (
+              <div className="post__no-posts">
+                <div className="post__text">게시글이 없습니다.</div>
+              </div>
+            )}
+          </div>
+        ) : activeTab === "like" ? (
+          <div className="post">
+            {likePosts?.length > 0 ? (
+              likePosts?.map((post, i) => <PostBox key={i} post={post} />)
+            ) : (
+              <div className="post__no-posts">
+                <div className="post__text">게시글이 없습니다.</div>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );
