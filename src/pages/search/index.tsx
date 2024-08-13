@@ -8,6 +8,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useContext, useEffect, useState } from "react";
 interface IFilter {
@@ -19,6 +20,7 @@ export default function SearchPage() {
   const [filter, setFilter] = useState<IFilter>({
     search: "",
   });
+  const t = useTranslation();
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter({ ...filter, search: e.target.value?.trim() });
@@ -44,13 +46,13 @@ export default function SearchPage() {
   return (
     <div className="home__top">
       <div className="home__title">
-        <div className="home__title-text">Search</div>
+        <div className="home__title-text">{t("MENU_SEARCH")}</div>
       </div>
       <div className="home__search-div">
         <input
           type="text"
           className="home__search"
-          placeholder="해시태그 검색"
+          placeholder={t("SEARCH_HASHTAGS")}
           onChange={onChangeInput}
         />
       </div>
@@ -59,7 +61,7 @@ export default function SearchPage() {
           posts?.map(post => <PostBox key={post.id} post={post} />)
         ) : (
           <div className="post__no-posts">
-            <div className="post__text">게시글이 없습니다.</div>
+            <div className="post__text">{t("NO_POSTS")}</div>
           </div>
         )}
       </div>

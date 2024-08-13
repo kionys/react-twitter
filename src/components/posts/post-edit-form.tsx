@@ -7,6 +7,7 @@ import {
   ref,
   uploadString,
 } from "firebase/storage";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import PostsHeader from "pages/posts/posts-header";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -32,6 +33,7 @@ export default function PostEditForm() {
     hashtag: "",
     imageFile: "" || null,
   });
+  const t = useTranslation();
 
   useEffect(() => {
     setState({ ...state, hashtag: "" });
@@ -161,7 +163,7 @@ export default function PostEditForm() {
           value={state.content}
           className="post-form__textarea"
           required
-          placeholder="What is happening?"
+          placeholder={t("POST_PLACEHOLDER")}
           onChange={onChangeInput}
         />
         <div className="post-form__hashtags">
@@ -181,7 +183,7 @@ export default function PostEditForm() {
             className="post-form__input"
             name="hashtag"
             id="hashtag"
-            placeholder="해시태그 + 스페이스바 입력"
+            placeholder={t("POST_HASHTAG")} // 해시태그 + 스페이스바 입력
             onChange={onChangeInput}
             onKeyUp={onKeyUpHashtag}
             value={state.hashtag}

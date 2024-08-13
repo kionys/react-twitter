@@ -10,6 +10,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -23,7 +24,7 @@ interface UserProps {
 export default function FollowingBox({ post }: FollowingProps) {
   const { user } = useContext(AuthContext);
   const [postFollowers, setPostFollowers] = useState<UserProps[]>([]);
-
+  const t = useTranslation();
   const getFollowers = useCallback(async () => {
     if (post.uid) {
       const ref = doc(db, "follower", post.uid);
@@ -109,7 +110,8 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__following-btn"
             onClick={onClickUnFollow}
           >
-            팔로잉
+            {/* 팔로잉 */}
+            {t("BUTTON_FOLLOW")}
           </button>
         ) : (
           <button
@@ -117,7 +119,8 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__follow-btn"
             onClick={onClickFollow}
           >
-            팔로우
+            {/* 팔로우 */}
+            {t("BUTTON_FOLLOW")}
           </button>
         ))}
     </>

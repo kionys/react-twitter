@@ -1,6 +1,7 @@
 import AuthContext from "context/auth-context";
 import { app } from "firebase-app";
 import { getAuth, signOut } from "firebase/auth";
+import useTranslation from "hooks/use-translation";
 import { useContext } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
@@ -13,20 +14,26 @@ import { toast } from "react-toastify";
 export default function MenuList() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+
+  const t = useTranslation();
+
   return (
     <div className="footer">
       <div className="footer__grid">
         <button type="button" className="" onClick={() => navigate("/")}>
           <BsHouse />
-          Home
+          {/* Home */}
+          {t("MENU_HOME")}
         </button>
         <button type="button" className="" onClick={() => navigate("/profile")}>
           <BiUserCircle />
-          Profile
+          {/* Profile */}
+          {t("MENU_PROFILE")}
         </button>
         <button type="button" className="" onClick={() => navigate("/search")}>
           <AiOutlineSearch />
-          Search
+          {/* Search */}
+          {t("MENU_SEARCH")}
         </button>
         <button
           type="button"
@@ -34,7 +41,8 @@ export default function MenuList() {
           onClick={() => navigate("/notifications")}
         >
           <IoMdNotifications />
-          Notification
+          {/* Notification */}
+          {t("MENU_NOTI")}
         </button>
         {user === null ? (
           <button
@@ -43,7 +51,8 @@ export default function MenuList() {
             onClick={() => navigate("/users/login")}
           >
             <MdLogin />
-            Login
+            {/* Login */}
+            {t("MENU_LOGIN")}
           </button>
         ) : (
           <button
@@ -52,11 +61,12 @@ export default function MenuList() {
             onClick={async () => {
               const auth = getAuth(app);
               await signOut(auth);
-              toast.success("로그아웃 되었습니다.");
+              toast.success(t("LOGOUT_SUCCESS"));
             }}
           >
             <MdLogout />
-            Logout
+            {/* Logout */}
+            {t("MENU_LOGOUT")}
           </button>
         )}
       </div>

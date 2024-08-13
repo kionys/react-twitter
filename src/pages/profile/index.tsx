@@ -1,3 +1,4 @@
+import { languageState } from "atom";
 import PostBox from "components/posts/post-box";
 import AuthContext from "context/auth-context";
 import { db } from "firebase-app";
@@ -8,18 +9,25 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
 const PROFILE_DEFAULT_URL = "/logo512.png";
+type TabType = "my" | "like";
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<"my" | "like">("my");
+  const [activeTab, setActiveTab] = useState<TabType>("my");
   const [myPosts, setMyPosts] = useState<PostProps[]>([]);
   const [likePosts, setLikePosts] = useState<PostProps[]>([]);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+
+  const [language, setLanguage] = useRecoilState(languageState);
+  const t = useTranslation();
+  console.log(language);
 
   // 실시간으로 posts 컬렉션 리스트 가져오기
   useEffect(() => {
@@ -66,10 +74,15 @@ export default function ProfilePage() {
     }
   }, [user, activeTab]);
 
+  const onClickLangauge = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLanguage(language === "ko" ? "en" : "ko");
+    localStorage.setItem("language", language === "ko" ? "en" : "ko");
+  };
   return (
     <div className="home">
       <div className="home__top">
-        <div className="home__title">Profile</div>
+        <div className="home__title">{t("MENU_PROFILE")}</div>
         <div className="profile">
           <img
             src={user?.photoURL || PROFILE_DEFAULT_URL}
@@ -78,13 +91,24 @@ export default function ProfilePage() {
             width={100}
             height={100}
           />
-          <button
-            type="button"
-            className="profile__btn"
-            onClick={() => navigate("/profile/edit")}
-          >
-            프로필 수정
-          </button>
+          <div className="profile__flex">
+            <button
+              type="button"
+              className="profile__btn"
+              onClick={() => navigate("/profile/edit")}
+            >
+              {/* 프로필 수정 */}
+              {t("BUTTON_EDIT_PROFILE")}
+            </button>
+
+            <button
+              type="button"
+              className="profile__btn--langauge"
+              onClick={onClickLangauge}
+            >
+              {language === "ko" ? "한국어" : "English"}
+            </button>
+          </div>
         </div>
         <div className="profile__text">
           <div className="profile__name">{user?.displayName || "사용자님"}</div>
@@ -97,7 +121,8 @@ export default function ProfilePage() {
             }`}
             onClick={() => setActiveTab("my")}
           >
-            For you
+            {/* For you */}
+            {t("TAB_ALL")}
           </div>
           <div
             className={`home__tab ${
@@ -105,7 +130,8 @@ export default function ProfilePage() {
             }`}
             onClick={() => setActiveTab("like")}
           >
-            Likes
+            {/* Likes */}
+            {t("TAB_LIKES")}
           </div>
         </div>
         {activeTab === "my" ? (
@@ -114,7 +140,10 @@ export default function ProfilePage() {
               myPosts?.map((post, i) => <PostBox key={i} post={post} />)
             ) : (
               <div className="post__no-posts">
-                <div className="post__text">게시글이 없습니다.</div>
+                <div className="post__text">
+                  {/* 게시글이 없습니다. */}
+                  {t("NO_POSTS")}
+                </div>
               </div>
             )}
           </div>
@@ -124,7 +153,10 @@ export default function ProfilePage() {
               likePosts?.map((post, i) => <PostBox key={i} post={post} />)
             ) : (
               <div className="post__no-posts">
-                <div className="post__text">게시글이 없습니다.</div>
+                <div className="post__text">
+                  {/* 게시글이 없습니다. */}
+                  {t("NO_POSTS")}
+                </div>
               </div>
             )}
           </div>

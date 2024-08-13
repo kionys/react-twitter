@@ -2,6 +2,7 @@ import AuthContext from "context/auth-context";
 import { db, storage } from "firebase-app";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import useTranslation from "hooks/use-translation";
 import { useContext, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -21,6 +22,7 @@ export default function PostForm() {
     hashtag: "",
     imageFile: "" || null,
   });
+  const t = useTranslation();
 
   useEffect(() => {
     setState({ ...state, hashtag: "" });
@@ -131,7 +133,7 @@ export default function PostForm() {
           value={state.content}
           className="post-form__textarea"
           required
-          placeholder="What is happening?"
+          placeholder={t("POST_PLACEHOLDER")}
           onChange={onChangeInput}
         />
         <div className="post-form__hashtags">
@@ -151,7 +153,7 @@ export default function PostForm() {
             className="post-form__input"
             name="hashtag"
             id="hashtag"
-            placeholder="해시태그 + 스페이스바 입력"
+            placeholder={t("POST_HASHTAG")}
             onChange={onChangeInput}
             onKeyUp={onKeyUpHashtag}
             value={state.hashtag}
@@ -183,7 +185,7 @@ export default function PostForm() {
                   type="button"
                   onClick={onClickClearImage}
                 >
-                  Clear
+                  {t("BUTTON_DELETE")}
                 </button>
               </div>
             )}

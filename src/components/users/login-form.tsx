@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import useTranslation from "hooks/use-translation";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -22,6 +23,7 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
+  const t = useTranslation();
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
@@ -31,12 +33,14 @@ export default function LoginForm() {
     switch (name) {
       case "email":
         const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-        !value?.match(regex) && setError("이메일 형식이 올바르지 않습니다.");
+        // 이메일 형식이 올바르지 않습니다.
+        !value?.match(regex) && setError(t("VALI_EMAIL_CHECK"));
         value?.match(regex) && setError("");
         return;
 
       case "password":
-        value?.length < 8 && setError("비밀번호는 8자리 이상 입력해주세요.");
+        // 비밀번호는 8자리 이상 입력해주세요.
+        value?.length < 8 && setError(t("VALI_PASSWORD_CHECK"));
         value?.length >= 8 && setError("");
         return;
 
@@ -50,7 +54,8 @@ export default function LoginForm() {
     try {
       const auth = getAuth(app);
       await signInWithEmailAndPassword(auth, state.email, state.password);
-      toast.success("로그인이 성공적으로 완료되었습니다.");
+      // 로그인이 되었습니다.
+      toast.success(t("SIGNIN_SUCCESS"));
       navigate("/");
     } catch (error: any) {
       console.log(error);
@@ -84,7 +89,8 @@ export default function LoginForm() {
           console.log(result);
           console.log("User Info:", result.user);
           navigate("/");
-          toast.success("로그인 되었습니다.");
+          // 로그인이 되었습니다.
+          toast.success(t("SIGNIN_SUCCESS"));
         })
         .catch(error => {
           const errorMessage = error?.message;
@@ -97,9 +103,9 @@ export default function LoginForm() {
   return (
     <>
       <form onSubmit={onClickSubmitLogin} className="form form--lg">
-        <div className="form__title">로그인</div>
+        <div className="form__title">{t("SIGNIN")}</div>
         <div className="form__block">
-          <label htmlFor="email">이메일</label>
+          <label htmlFor="email">{t("FORM_EMAIL")}</label>
           <input
             type="text"
             name="email"
@@ -110,7 +116,7 @@ export default function LoginForm() {
           />
         </div>
         <div className="form__block">
-          <label htmlFor="password">비밀번호</label>
+          <label htmlFor="password">{t("FORM_PASSWORD")}</label>
           <input
             type="password"
             name="password"
@@ -128,9 +134,11 @@ export default function LoginForm() {
           </div>
         )}
         <div className="form__block">
-          계정이 없으신가요?
+          {/* 계정이 없으신가요? */}
+          {t("NO_ACCOUNT")}
           <Link to="/users/signup" className="form__link">
-            로그인하기
+            {/* 로그인하기 */}
+            {t("SIGNUP_LINK")}
           </Link>
         </div>
         <div className="form__block--lg">
@@ -139,7 +147,8 @@ export default function LoginForm() {
             className="form__btn--submit"
             disabled={error?.length > 0}
           >
-            로그인
+            {/* 로그인 */}
+            {t("SIGNIN")}
           </button>
         </div>
         <div className="form__block--lg">
@@ -149,7 +158,8 @@ export default function LoginForm() {
             className="form__btn--google"
             onClick={onClickSocialLogin}
           >
-            Google로 로그인
+            {/* Google로 로그인 */}
+            {t("LOGIN_WITH_GOOGLE")}
           </button>
         </div>
         <div className="form__block--lg">
@@ -159,7 +169,8 @@ export default function LoginForm() {
             className="form__btn--github"
             onClick={onClickSocialLogin}
           >
-            Github로 로그인
+            {/* Github로 로그인 */}
+            {t("LOGIN_WITH_GITHUB")}
           </button>
         </div>
       </form>

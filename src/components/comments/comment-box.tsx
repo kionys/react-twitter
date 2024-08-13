@@ -1,6 +1,7 @@
 import AuthContext from "context/auth-context";
 import { db } from "firebase-app";
 import { arrayRemove, doc, updateDoc } from "firebase/firestore";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useContext } from "react";
 import { toast } from "react-toastify";
@@ -20,6 +21,7 @@ interface CommentBoxProps {
 
 export default function CommentBox({ data, post }: CommentBoxProps) {
   const { user } = useContext(AuthContext);
+  const t = useTranslation();
 
   const onClickDeleteComment = async () => {
     if (post) {
@@ -52,7 +54,8 @@ export default function CommentBox({ data, post }: CommentBoxProps) {
               className="comment__delete-btn"
               onClick={onClickDeleteComment}
             >
-              삭제
+              {/* 삭제 */}
+              {t("BUTTON_DELETE")}
             </button>
           )}
         </div>

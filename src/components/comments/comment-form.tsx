@@ -7,6 +7,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
@@ -20,6 +21,7 @@ interface IStateComment {
 export default function CommentForm({ post }: CommentFormProps) {
   const { user } = useContext(AuthContext);
   const [state, setState] = useState<IStateComment>({ comment: "" });
+  const t = useTranslation();
 
   const onChangeTextarea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const name = e.target.name;
@@ -80,7 +82,7 @@ export default function CommentForm({ post }: CommentFormProps) {
         name="comment"
         id="comment"
         required
-        placeholder="Wat is happening?"
+        placeholder={t("POST_PLACEHOLDER")} // What is happening?
         value={state.comment || ""}
         onChange={onChangeTextarea}
       />
@@ -89,7 +91,7 @@ export default function CommentForm({ post }: CommentFormProps) {
         <input
           type="submit"
           className="post-form__submit-btn"
-          value={"Comment"}
+          value={t("BUTTON_COMMENT")} // "Comment"
           disabled={!state.comment}
         />
       </div>

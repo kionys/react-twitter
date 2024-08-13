@@ -9,6 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import useTranslation from "hooks/use-translation";
 import { PostProps } from "pages/home";
 import { useContext } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -22,6 +23,7 @@ export default function PostBox({ post }: PostBoxProps) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const imageRef = ref(storage, post?.image!);
+  const t = useTranslation();
 
   // 게시글 삭제
   const onClickPostDelete = async () => {
@@ -110,10 +112,14 @@ export default function PostBox({ post }: PostBoxProps) {
                 className="post__delete"
                 onClick={onClickPostDelete}
               >
-                삭제
+                {/* 삭제 */}
+                {t("BUTTON_DELETE")}
               </button>
               <button type="button" className="post__edit">
-                <Link to={`/posts/edit/${post?.id}`}>수정</Link>
+                <Link to={`/posts/edit/${post?.id}`}>
+                  {/* 수정 */}
+                  {t("BUTTON_EDIT")}
+                </Link>
               </button>
             </>
           )}

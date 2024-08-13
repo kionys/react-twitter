@@ -7,6 +7,7 @@ import {
   ref,
   uploadString,
 } from "firebase/storage";
+import useTranslation from "hooks/use-translation";
 import PostsHeader from "pages/posts/posts-header";
 import { useContext, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
@@ -27,6 +28,7 @@ export default function ProfileEdit() {
     image: null,
     displayName: null,
   });
+  const t = useTranslation();
 
   useEffect(() => {
     setState({
@@ -107,7 +109,7 @@ export default function ProfileEdit() {
             type="text"
             name="displayName"
             className="post-form__input"
-            placeholder="이름"
+            placeholder={t("NAME_PLACEHOLDER")}
             value={state.displayName || ""}
             onChange={onChangeInput}
           />
@@ -124,7 +126,8 @@ export default function ProfileEdit() {
                 onClick={onClickDeleteImage}
                 className="post-form__clear-btn"
               >
-                삭제
+                {/* 삭제 */}
+                {t("BUTTON_DELETE")}
               </button>
             </div>
           )}
@@ -144,7 +147,7 @@ export default function ProfileEdit() {
             />
             <input
               type="submit"
-              value={"프로필 수정"}
+              value={t("BUTTON_EDIT_PROFILE")}
               className="post-form__submit-btn"
             />
           </div>
