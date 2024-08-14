@@ -111,7 +111,7 @@ export default function FollowingBox({ post }: FollowingProps) {
             onClick={onClickUnFollow}
           >
             {/* 팔로잉 */}
-            {t("BUTTON_FOLLOW")}
+            {t("BUTTON_FOLLOWING")}
           </button>
         ) : (
           <button
